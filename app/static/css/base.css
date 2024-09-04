@@ -1,0 +1,87 @@
+.navbar-brand div {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.navbar .nav-link {
+  color: white;
+  font-weight: bold;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:active,
+.navbar .nav-link:visited {
+  color: white;
+}
+
+.centered-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+footer {
+  display: block;
+  border-radius: 3px;
+  background-color: #2a4861;
+  border: solid 1px #3f5a70;
+  box-shadow: 0px 0px 6px #3f5a70;
+}
+
+#footerleft {
+  float: left;
+  padding: 5px;
+  color: white;
+}
+
+#footerright {
+  text-align: right;
+  padding-right: 5px;
+  color: white;
+}
+
+button {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #d4dadf;
+  border: solid 1px #3f5a70;
+  color: #3f5a70;
+}
+
+#flip {
+  cursor: pointer;
+  width: 0%;
+}
+
+#panel {
+  display: none;
+  padding: 3px;
+  border-radius: 3px;
+  background-color: #d4dadf;
+  border: solid 1px #3f5a70;
+  box-shadow: 0px 0px 6px #3f5a70;
+}
+
+table {
+  margin: 0 auto;
+  width: auto;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+td {
+  padding: 5px;
+  text-align: right;
+}
+
+table, td {
+  border: none;
+  background-color: transparent;
+}
+
+tr.selected {
+  background-color: transparent;
+}
