@@ -2,23 +2,23 @@
 
 {% block name%} Calc. Binomial {% endblock %}
 
-{% block title%} 
+{% block title%}
     Calculadora de Distribución Binomial<br>
-    \( X \sim \text{Bin}(n,p) \) 
+    \( X \sim \text{Bin}(n,p) \)
 {% endblock %}
 
 {% block form %}
     <tr>
         <td>\(n =\)</td>
-        <td><input type="text" name="n" size="7" value="" onchange="validateN(); updateProb();"></td>
+        <td><input type="text" name="n" size="4" value="" onchange="validateN(); updateProb();"></td>
 
         <td>\(p =\)</td>
-        <td><input type="text" name="p" size="7" value="" onchange="validateP(); updateProb();"></td>
+        <td><input type="text" name="p" size="4" value="" onchange="validateP(); updateProb();"></td>
     </tr>
 
     <tr>
         <td>\(x =\)</td>
-        <td><input type="text" name="x" size="7" value="" onchange="validateX(); updateProb();"></td>
+        <td><input type="text" name="x" size="4" value="" onchange="validateX(); updateProb();"></td>
 
         <td>
             <div id="mydropdowndiv">
@@ -31,49 +31,32 @@
         </td>
         <td>
             <div id="probdiv">
-                <input type="text" name="prob" size="7" value="">
+                <input type="text" name="prob" size="4" value="">
             </div>
         </td>
     </tr>
 {% endblock %}
 
 {% block script %}
-    <script src="{{ url_for('static', filename='js/validacion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/binomial.js') }}"></script>
 {% endblock %}
 
 {% block help %}
-    <p>
-        Este applet calcula probabilidades para la distribución binomial:</h1>
-        \(X \sim \text{Bin}(n, p)\)
-    </p>
-
+    <p> Este applet permite calcular probabilidades asociadas a la distribución binomial: \(X \sim \text{Bin}(n, p)\) </p>
     <h4>Instrucciones</h4>
     <ul>
-        <li>Ingrese el número de ensayos en la casilla \(n\).</li>
-        <li>Ingrese la probabilidad de éxito en la casilla \(p\).</li>
+        <li>Ingrese el número de ensayos en el campo correspondiente a \(n\).</li>
+        <li>Ingrese la probabilidad de éxito en el campo correspondiente a \(p\).</li>
     </ul>
-
-    <p>
-        Para calcular una probabilidad, seleccione \(P(X = x)\) del menú desplegable, ingrese un valor numérico \(x\) y
-        presione "Enter" en su teclado. La probabilidad \(P(X = x)\) aparecerá en la casilla correspondiente. Seleccione
-        \(P(X \leq x)\) del menú desplegable para una probabilidad acumulada.
-    </p>
-
+    <p> Para calcular una probabilidad puntual, seleccione \(P(X = x)\) en el menú desplegable, ingrese un valor para \(x\)
+        y presione "Enter" en su teclado. La probabilidad \(P(X = x)\) se mostrará automáticamente. Si desea calcular una
+        probabilidad acumulada, seleccione \(P(X \leq x)\) en el menú desplegable. </p>
     <h4>Detalles</h4>
     <ul>
-        <li style="margin-bottom: 10px;">
-            \(\displaystyle f(x) = P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}\)
-            para \(x = 0, 1, \dots, n\).
-        </li>
-        <li style="margin-bottom: 10px;">
-            \(\mu = E(X) = np\).
-        </li>
-        <li style="margin-bottom: 10px;">
-            \(\text{Var}(X) = np(1 - p)\).
-        </li>
-        <li style="margin-bottom: 10px;">
-            \(\sigma = \sqrt{\text{Var}(X)} = \sqrt{np(1 - p)}\).
-        </li>
+        <li style="margin-bottom: 10px;"> La función de probabilidad es \(\displaystyle f(x) = P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}\), para \(x = 0, 1, \dots,
+            n\). </li>
+        <li style="margin-bottom: 10px;"> El valor esperado es \(\mu = E(X) = np\). </li>
+        <li style="margin-bottom: 10px;"> La varianza es \(\sigma^2 = \text{Var}(X) = np(1 - p)\). </li>
+        <li style="margin-bottom: 10px;"> La desviación estándar es \(\sigma = \sqrt{\text{Var}(X)} = \sqrt{np(1 - p)}\). </li>
     </ul>
 {% endblock %}
