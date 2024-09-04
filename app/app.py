@@ -12,6 +12,10 @@ def index():
 def binomial():
     return render_template('binomial.html')
 
+# Calculadora poisson
+@app.route('/poisson')
+def poisson():
+    return render_template('poisson.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

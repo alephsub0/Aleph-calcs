@@ -1,0 +1,55 @@
+{% extends './calculadora.html' %}
+
+{% block name%} Calc. Poisson {% endblock %}
+
+{% block title%}
+    Calculadora de Distribución de Poisson<br>
+    \( X \sim \text{Pois}(\lambda) \)
+{% endblock %}
+
+{% block form %}
+    <tr>
+        <td>\(\lambda =\)</td>
+        <td><input type="text" name="l" size="4" value="" onchange="validateL(); updateProb();"></td>
+    </tr>
+
+    <tr>
+        <td>\(x =\)</td>
+        <td><input type="text" name="x" size="4" value="" onchange="validateX(); updateProb();"></td>
+
+        <td>
+            <div id="mydropdowndiv">
+                <select name="mydropdown" onchange="updateProb();">
+                    <option value="eq">P(X = x)  =</option>
+                    <option value="le">P(X ≤ x)  =</option>
+                    <option value="ge">P(X ≥ x)  =</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div id="probdiv">
+                <input type="text" name="prob" size="4" value="">
+            </div>
+        </td>
+    </tr>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='js/poisson.js') }}"></script>
+{% endblock %}
+
+{% block help %}
+    <p> Este applet permite calcular probabilidades asociadas a la distribución de Poisson: \(X \sim \text{Pois}(\lambda)\) </p>
+    <h4>Instrucciones</h4>
+    <ul>
+        <li>Ingrese el valor de \(\lambda\) en el campo correspondiente.</li>
+    </ul>
+    <p> Para calcular una probabilidad puntual, seleccione \(P(X = x)\) en el menú desplegable, ingrese un valor para \(x\) y presione "Enter" en su teclado. La probabilidad \(P(X = x)\) se mostrará automáticamente. Si desea calcular una probabilidad acumulada, seleccione \(P(X \leq x)\) en el menú desplegable. </p>
+    <h4>Detalles</h4>
+    <ul>
+        <li style="margin-bottom: 10px;"> La función de probabilidad es \(\displaystyle f(x) = P(X = x) = \frac{e^{-\lambda} \lambda^x}{x!}\), para \(x = 0, 1, 2, \ldots\). </li>
+        <li style="margin-bottom: 10px;"> El valor esperado es \(\mu = E(X) = \lambda\). </li>
+        <li style="margin-bottom: 10px;"> La varianza es \(\sigma^2 = \text{Var}(X) = \lambda\). </li>
+        <li style="margin-bottom: 10px;"> La desviación estándar es \(\sigma = \sqrt{\text{Var}(X)} = \sqrt{\lambda}\). </li>
+    </ul>
+{% endblock %}

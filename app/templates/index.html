@@ -7,7 +7,10 @@
 <h2>Calculadora de probabilidades</h2>
 <p>Este es un proyecto de Calculadora de probabilidades.</p>
 
-<!-- Enlace a calculadora binomial -->
-<a href="{{ url_for('binomial') }}">Calculadora Binomial</a>
-
+<ul>
+    <!-- Enlace a calculadora binomial -->
+    <li><a href="{{ url_for('binomial') }}">Calculadora Binomial</a></li>
+    <!-- Enlace a calculadora poisson -->
+    <li><a href="{{ url_for('poisson') }}">Calculadora de Poisson</a></li>
+</ul>
 {% endblock %}
