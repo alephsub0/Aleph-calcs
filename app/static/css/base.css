@@ -97,3 +97,8 @@ tr.selected {
     width: 100%; 
   }
 }
+
+#mom {
+  font-size: 0.8em;
+  text-align: center;
+}

@@ -136,4 +136,13 @@ function updatePlot() {
 
     var chart = new google.visualization.ComboChart(document.getElementById('Plot'));
     chart.draw(data, options);
+
+    var txt = "";
+
+    txt += '\\( \\mu = E(X) = ' + mean.toFixed(3) + ';\\hspace{0.5cm}\\)';
+    txt += '\\( \\sigma = ' + sd.toFixed(3) + ';\\hspace{0.5cm}\\)';
+    txt += '\\( \\sigma^2 = \\text{Var}(X) = ' + Math.pow(sd, 2).toFixed(3) + '.\\)';
+
+    document.getElementById("moments").innerHTML = txt;
+    MathJax.typesetPromise(["#moments"]);
 }
