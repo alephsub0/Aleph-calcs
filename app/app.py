@@ -17,5 +17,10 @@ def binomial():
 def poisson():
     return render_template('poisson.html')
 
+# Calculadora normal
+@app.route('/exponencial')
+def exponencial():
+    return render_template('exponencial.html')
+
 if __name__ == '__main__':
     app.run(debug=True)

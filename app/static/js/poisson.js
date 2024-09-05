@@ -1,5 +1,5 @@
 function validateL() {
-    const l = parseInt(document.forms[0].l.value);
+    const l = parseFloat(document.forms[0].l.value);
     if (l <= 0  || isNaN(l)) {
         alert('Error: El valor de lambda debe ser mayor a 0.');
         document.forms[0].l.value = '';
@@ -10,8 +10,8 @@ function validateL() {
 
 function validateX() {
     const x = parseInt(document.forms[0].x.value);
-    if (isNaN(x)) {
-        alert('Error: El valor de x debe ser un entero.');
+    if (isNaN(x) || x < 0) {
+        alert('Error: El valor de x debe ser un entero mayor o igual a 0.');
         document.forms[0].x.value = '';
     } else {
         document.forms[0].x.value = x;
@@ -38,10 +38,10 @@ function poissonCdf(l, x) {
 }
 
 function updateProb() {
-    const l = parseInt(document.forms[0].l.value);
+    const l = parseFloat(document.forms[0].l.value);
     const x = parseInt(document.forms[0].x.value);
 
-    if (isNaN(l) || isNaN(x) || l <= 0) {
+    if (isNaN(l) || isNaN(x) || l <= 0 || x < 0) {
         return;
     }
 
