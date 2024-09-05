@@ -10,19 +10,19 @@
 {% block form %}
     <tr>
         <td>\(n =\)</td>
-        <td><input type="text" name="n" size="4" value="" onchange="validateN(); updateProb();"></td>
+        <td><input type="text" name="n" size="4" value="" onchange="validateN(); updateProb(); updatePlot()"></td>
 
         <td>\(p =\)</td>
-        <td><input type="text" name="p" size="4" value="" onchange="validateP(); updateProb();"></td>
+        <td><input type="text" name="p" size="4" value="" onchange="validateP(); updateProb(); updatePlot()"></td>
     </tr>
 
     <tr>
         <td>\(x =\)</td>
-        <td><input type="text" name="x" size="4" value="" onchange="validateX(); updateProb();"></td>
+        <td><input type="text" name="x" size="4" value="" onchange="validateX(); updateProb(); updatePlot()"></td>
 
         <td>
             <div id="mydropdowndiv">
-                <select name="mydropdown" onchange="updateProb();">
+                <select name="mydropdown" onchange="updateProb(); updatePlot()">
                     <option value="eq">P(X = x)  =</option>
                     <option value="le">P(X ≤ x)  =</option>
                     <option value="ge">P(X ≥ x)  =</option>

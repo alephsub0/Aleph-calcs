@@ -85,3 +85,9 @@ table, td {
 tr.selected {
   background-color: transparent;
 }
+
+#Plot {
+  width: 50%;
+  margin: 0 auto; 
+  text-align: center; 
+}
