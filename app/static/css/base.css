@@ -91,3 +91,9 @@ tr.selected {
   margin: 0 auto; 
   text-align: center; 
 }
+
+@media only screen and (max-width: 768px) {
+  #Plot {
+    width: 100%; 
+  }
+}
