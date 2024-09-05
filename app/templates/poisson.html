@@ -10,12 +10,12 @@
 {% block form %}
     <tr>
         <td>\(\lambda =\)</td>
-        <td><input type="text" name="l" size="4" value="" onchange="validateL(); updateProb();"></td>
+        <td><input type="number" name="l" value="" min="0" step="0.1"onchange="validateL(); updateProb();"></td>
     </tr>
 
     <tr>
         <td>\(x =\)</td>
-        <td><input type="text" name="x" size="4" value="" onchange="validateX(); updateProb();"></td>
+        <td><input type="number" name="x" value="" min="0" onchange="validateX(); updateProb();"></td>
 
         <td>
             <div id="mydropdowndiv">
@@ -28,7 +28,7 @@
         </td>
         <td>
             <div id="probdiv">
-                <input type="text" name="prob" size="4" value="">
+                <input type="number" name="prob" value="">
             </div>
         </td>
     </tr>

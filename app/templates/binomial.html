@@ -10,15 +10,16 @@
 {% block form %}
     <tr>
         <td>\(n =\)</td>
-        <td><input type="text" name="n" size="4" value="" onchange="validateN(); updateProb(); updatePlot()"></td>
+        <td><input type="number" name="n" value="" min="1" onchange="validateN(); updateProb(); updatePlot()"></td>
 
         <td>\(p =\)</td>
-        <td><input type="text" name="p" size="4" value="" onchange="validateP(); updateProb(); updatePlot()"></td>
+        <td><input type="number" name="p" value="" min="0" max="1" step="0.05"
+                onchange="validateP(); updateProb(); updatePlot()"></td>
     </tr>
 
     <tr>
         <td>\(x =\)</td>
-        <td><input type="text" name="x" size="4" value="" onchange="validateX(); updateProb(); updatePlot()"></td>
+        <td><input type="number" name="x" size="4" min="0" value="" onchange="validateX(); updateProb(); updatePlot()"></td>
 
         <td>
             <div id="mydropdowndiv">
@@ -31,7 +32,7 @@
         </td>
         <td>
             <div id="probdiv">
-                <input type="text" name="prob" size="4" value="">
+                <input type="number" name="prob" size="4" value="">
             </div>
         </td>
     </tr>
@@ -48,13 +49,10 @@
         <li>Ingrese el número de ensayos en el campo correspondiente a \(n\).</li>
         <li>Ingrese la probabilidad de éxito en el campo correspondiente a \(p\).</li>
     </ul>
-    <p> Para calcular una probabilidad puntual, seleccione \(P(X = x)\) en el menú desplegable, ingrese un valor para \(x\)
-        y presione "Enter" en su teclado. La probabilidad \(P(X = x)\) se mostrará automáticamente. Si desea calcular una
-        probabilidad acumulada, seleccione \(P(X \leq x)\) en el menú desplegable. </p>
+    <p> Para calcular una probabilidad puntual, seleccione \(P(X = x)\) en el menú desplegable, ingrese un valor para \(x\) y presione "Enter" en su teclado. La probabilidad \(P(X = x)\) se mostrará automáticamente. Si desea calcular una probabilidad acumulada, seleccione \(P(X \leq x)\) en el menú desplegable. </p>
     <h4>Detalles</h4>
     <ul>
-        <li style="margin-bottom: 10px;"> La función de probabilidad es \(\displaystyle f(x) = P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}\), para \(x = 0, 1, \dots,
-            n\). </li>
+        <li style="margin-bottom: 10px;"> La función de probabilidad es \(\displaystyle f(x) = P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}\), para \(x = 0, 1, \dots, n\). </li>
         <li style="margin-bottom: 10px;"> El valor esperado es \(\mu = E(X) = np\). </li>
         <li style="margin-bottom: 10px;"> La varianza es \(\sigma^2 = \text{Var}(X) = np(1 - p)\). </li>
         <li style="margin-bottom: 10px;"> La desviación estándar es \(\sigma = \sqrt{\text{Var}(X)} = \sqrt{np(1 - p)}\). </li>

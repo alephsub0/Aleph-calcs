@@ -102,3 +102,7 @@ tr.selected {
   font-size: 0.8em;
   text-align: center;
 }
+
+input[type=number] {
+  width: 70px;
+}
