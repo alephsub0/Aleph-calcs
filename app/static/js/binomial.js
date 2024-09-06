@@ -145,4 +145,27 @@ function updatePlot() {
 
     document.getElementById("moments").innerHTML = txt;
     MathJax.typesetPromise(["#moments"]);
+
+    updateTable()
+}
+
+// Función para actualizar la tabla de probabilidades
+function updateTable() {
+    const n = parseInt(document.getElementsByName('n')[0].value);
+    const p = parseFloat(document.getElementsByName('p')[0].value);
+
+    if (isNaN(n) || isNaN(p) || n <= 0 || p < 0 || p > 1) {
+        return;
+    }
+
+    const tableBody = document.getElementById('probabilities-body');
+    tableBody.innerHTML = ''; // Limpiar la tabla antes de llenarla
+
+    // Generar las filas de la tabla
+    for (let x = 0; x <= n; x++) {
+        const probability = binomialPmf(n, x, p).toFixed(5); // 
+
+        const row = `<tr><td>${x}</td><td> ${probability} </td></tr>`;
+        tableBody.innerHTML += row;
+    }
 }

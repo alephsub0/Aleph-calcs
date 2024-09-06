@@ -7,7 +7,7 @@
 </h3>
 
 <form>
-    <table>
+    <table class="form-table">
         <tbody>
             {% block form %} {% endblock %}
         </tbody>
@@ -25,7 +25,10 @@
 
 <footer>
     <div id="footerleft">
-        <div id="flip"><button id="toggleButton">Ayuda</button></div>
+        <div id="flip">
+            <button id="toggleHelpButton">Ayuda</button>
+            <button id="toggleTableButton">Más</button>
+        </div>
     </div>
     <div id="footerright">
         <p>
@@ -35,8 +38,12 @@
     </div>
 </footer>
 
-<div id="panel">
+<div id="helpPanel">
     {% block help %} {% endblock %}
+</div>
+
+<div id="masPanel" style="display: none;">
+    {% block mas %} {% endblock %}
 </div>
 
 <script type="text/javascript">
@@ -44,12 +51,32 @@
 </script>
 
 <script>
-    document.getElementById("toggleButton").onclick = function () {
-        var panel = document.getElementById("panel");
-        if (panel.style.display === "none" || panel.style.display === "") {
-            panel.style.display = "block";
+    // Funcionalidad para el botón de Ayuda
+    document.getElementById("toggleHelpButton").onclick = function () {
+        var helpPanel = document.getElementById("helpPanel");
+        var masPanel = document.getElementById("masPanel");
+
+        // Mostrar el panel de ayuda y ocultar el de tabla si está visible
+        if (helpPanel.style.display === "none" || helpPanel.style.display === "") {
+            helpPanel.style.display = "block";
+            masPanel.style.display = "none";  // Ocultar tabla de valores
         } else {
-            panel.style.display = "none";
+            helpPanel.style.display = "none";   // Ocultar ayuda
+        }
+    }
+
+    // Funcionalidad para el botón de Tabla de Valores
+    document.getElementById("toggleTableButton").onclick = function () {
+        var helpPanel = document.getElementById("helpPanel");
+        var masPanel = document.getElementById("masPanel");
+
+        // Mostrar la tabla y ocultar el panel de ayuda si está visible
+        if (masPanel.style.display === "none" || masPanel.style.display === "") {
+            masPanel.style.display = "block";
+            helpPanel.style.display = "none";  // Ocultar ayuda
+            updateTable();  // Actualizar la tabla cuando se despliega
+        } else {
+            masPanel.style.display = "none";  // Ocultar tabla de valores
         }
     }
 </script>

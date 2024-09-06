@@ -9,16 +9,16 @@
 
 {% block form %}
     <tr>
-        <td>\(n =\)</td>
+        <td title="Número de ensayos">\(n =\)</td>
         <td><input type="number" name="n" value="" min="1" onchange="validateN(); updateProb(); updatePlot()"></td>
 
-        <td>\(p =\)</td>
+        <td title="Probabilidad de éxito">\(p =\)</td>
         <td><input type="number" name="p" value="" min="0" max="1" step="0.05"
                 onchange="validateP(); updateProb(); updatePlot()"></td>
     </tr>
 
     <tr>
-        <td>\(x =\)</td>
+        <td title="Número de éxitos">\(x =\)</td>
         <td><input type="number" name="x" size="4" min="0" value="" onchange="validateX(); updateProb(); updatePlot()"></td>
 
         <td>
@@ -42,15 +42,30 @@
     <script src="{{ url_for('static', filename='js/binomial.js') }}"></script>
 {% endblock %}
 
+{% block mas %}
+    <h4>Tabla de Probabilidades</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>\(x\)</th>
+                <th>\(P(X = x)\)</th>
+            </tr>
+        </thead>
+        <tbody id="probabilities-body">
+            <!-- Aquí se insertarán las filas de probabilidades -->
+        </tbody>
+    </table>
+{% endblock %}
+
 {% block help %}
-    <p> Este applet permite calcular probabilidades asociadas a la distribución binomial: \(X \sim \text{Bin}(n, p)\) </p>
     <h4>Instrucciones</h4>
     <ul>
         <li>Ingrese el número de ensayos en el campo correspondiente a \(n\).</li>
         <li>Ingrese la probabilidad de éxito en el campo correspondiente a \(p\).</li>
+        <li>Ingrese el número de éxitos en el campo correspondiente a \(x\).</li>
+        <li>Seleccione el tipo de probabilidad que desea calcular en el menú desplegable.</li>
     </ul>
-    <p> Para calcular una probabilidad puntual, seleccione \(P(X = x)\) en el menú desplegable, ingrese un valor para \(x\) y presione "Enter" en su teclado. La probabilidad \(P(X = x)\) se mostrará automáticamente. Si desea calcular una probabilidad acumulada, seleccione \(P(X \leq x)\) en el menú desplegable. </p>
-    <h4>Detalles</h4>
+    <h4>Fórmulas</h4>
     <ul>
         <li style="margin-bottom: 10px;"> La función de probabilidad es \(\displaystyle f(x) = P(X = x) = \binom{n}{x} p^x (1 - p)^{n - x}\), para \(x = 0, 1, \dots, n\). </li>
         <li style="margin-bottom: 10px;"> El valor esperado es \(\mu = E(X) = np\). </li>

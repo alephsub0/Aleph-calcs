@@ -53,10 +53,12 @@ button {
 
 #flip {
   cursor: pointer;
-  width: 0%;
+  width: auto; 
+  display: inline-block; 
 }
 
-#panel {
+#helpPanel,
+#masPanel {
   display: none;
   padding: 3px;
   border-radius: 3px;
@@ -72,29 +74,55 @@ table {
   table-layout: auto;
 }
 
-td {
+.form-table td {
   padding: 5px;
   text-align: right;
 }
 
-table, td {
+.form-table table,
+.form-table td {
   border: none;
   background-color: transparent;
 }
 
-tr.selected {
+.form-table tr.selected,
+.form-table tbody tr:nth-child(even),
+.form-table tbody tr:nth-child(odd),
+.form-table tbody tr:hover {
   background-color: transparent;
 }
 
+th, 
+td {
+    border: 1px solid #3f5a70; /* Color del borde */
+    padding: 8px;
+}
+th {
+  background-color: #2a4861;
+  color: white;
+  font-weight: bold;
+}
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2; /* Color gris claro para las filas pares */
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ffffff; /* Color blanco para las filas impares */
+}
+
+tbody tr:hover {
+  background-color: #d4dadf; /* Cambia el color al pasar el mouse */
+}
+
 #Plot {
-  width: 50%;
-  margin: 0 auto; 
-  text-align: center; 
+  width: 70%;
+  margin: 0 auto;
+  text-align: center;
 }
 
 @media only screen and (max-width: 768px) {
   #Plot {
-    width: 100%; 
+    width: 100%;
   }
 }
 
