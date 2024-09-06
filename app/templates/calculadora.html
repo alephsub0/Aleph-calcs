@@ -2,27 +2,35 @@
 
 {% block body %}
 
+<!-- Título de la página -->
 <h3 style="text-align: center;">
+    <!-- Aquí se insertará el título de la página -->
     {% block title %} {% endblock %}
 </h3>
 
+<!-- Formulario para el contenido principal -->
 <form>
     <table class="form-table">
         <tbody>
-            {% block form %} {% endblock %}
+            {% block form %}
+                <!-- Aquí se insertará el formulario de la calculadora -->
+            {% endblock %}
         </tbody>
     </table>
     <br>
 </form>
 
+<!-- Gráfico y momentos -->
 <div id="Plot"></div><br>
 
 <div id="mom">
     <p id="moments" class="mathjaxMoments"></p>
 </div>
 
+<!-- Scripts de la página -->
 {% block script %} {% endblock %}
 
+<!-- Pie de página -->
 <footer>
     <div id="footerleft">
         <div id="flip">
@@ -38,14 +46,20 @@
     </div>
 </footer>
 
+<!-- Paneles de Ayuda y Más -->
 <div id="helpPanel">
-    {% block help %} {% endblock %}
+    {% block help %} 
+        <!-- Aquí se insertará el contenido de la ayuda -->
+    {% endblock %}
 </div>
 
 <div id="masPanel" style="display: none;">
-    {% block mas %} {% endblock %}
+    {% block mas %}
+        <!-- Aquí se insertará el contenido adicional -->
+    {% endblock %}
 </div>
 
+<!-- Carga de la librería Google Charts para gráficos -->
 <script type="text/javascript">
     google.charts.load('current', { 'packages': ['corechart'] });
 </script>
@@ -74,7 +88,6 @@
         if (masPanel.style.display === "none" || masPanel.style.display === "") {
             masPanel.style.display = "block";
             helpPanel.style.display = "none";  // Ocultar ayuda
-            updateTable();  // Actualizar la tabla cuando se despliega
         } else {
             masPanel.style.display = "none";  // Ocultar tabla de valores
         }

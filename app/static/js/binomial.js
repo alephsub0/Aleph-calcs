@@ -131,7 +131,7 @@ function updatePlot() {
         legend: { position: 'none' },
         seriesType: "bars",
         isStacked: true,
-        colors: ['#2a4861', '#2a615f']
+        colors: ['#2a4861', '#419693']
     };
 
     var chart = new google.visualization.ComboChart(document.getElementById('Plot'));
