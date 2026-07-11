@@ -1,20 +1,25 @@
 function validateX() {
-    validateField('x', parseInt, value => !isNaN(value) && value >= 0,
+    validateField('x', value => Number.parseInt(value, 10),
+        value => !Number.isNaN(value) && value >= 0,
         'Error: El valor de x debe ser un entero mayor o igual a 0.');
 }
 
 function factorial(n) {
-    if (n === 0) return 1;
+    if (n === 0) {
+        return 1;
+    }
     return n * factorial(n - 1);
 }
 
 function poissonPmf(l, x) {
-    return Math.pow(l, x) * Math.exp(-l) / factorial(x);
+    return l ** x * Math.exp(-l) / factorial(x);
 }
 
 function poissonCdf(l, x) {
     let cdf = 0;
-    for (let i = 0; i <= x; i++) cdf += poissonPmf(l, i);
+    for (let i = 0; i <= x; i++) {
+        cdf += poissonPmf(l, i);
+    }
     return cdf;
 }
 
@@ -29,9 +34,11 @@ function poissonRange(l) {
 }
 
 function updateProb() {
-    const l = parseFloat(document.forms[0].l.value);
-    const x = parseInt(document.forms[0].x.value);
-    if (isNaN(l) || isNaN(x) || l <= 0 || x < 0) return;
+    const l = Number.parseFloat(document.forms[0].l.value);
+    const x = Number.parseInt(document.forms[0].x.value, 10);
+    if (Number.isNaN(l) || Number.isNaN(x) || l <= 0 || x < 0) {
+        return;
+    }
 
     const comparison = document.forms[0].mydropdown.value;
     let probability = 0;
@@ -42,9 +49,11 @@ function updateProb() {
 }
 
 function updatePlot() {
-    const l = parseFloat(document.forms[0].l.value);
-    const x = parseInt(document.forms[0].x.value);
-    if (isNaN(l) || l <= 0) return;
+    const l = Number.parseFloat(document.forms[0].l.value);
+    const x = Number.parseInt(document.forms[0].x.value, 10);
+    if (Number.isNaN(l) || l <= 0) {
+        return;
+    }
 
     const range = poissonRange(l);
     drawDiscreteDistribution({
@@ -57,8 +66,10 @@ function updatePlot() {
 }
 
 function updateTable() {
-    const l = parseFloat(document.forms[0].l.value);
-    if (isNaN(l) || l <= 0) return;
+    const l = Number.parseFloat(document.forms[0].l.value);
+    if (Number.isNaN(l) || l <= 0) {
+        return;
+    }
 
     const range = poissonRange(l);
     populateProbabilityTable(range.start, range.end, x => poissonPmf(l, x));

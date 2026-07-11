@@ -1,52 +1,59 @@
 function validateN() {
-    validateField('n', parseInt, value => !isNaN(value) && value >= 1,
+    validateField('n', Number.parseInt, value => !Number.isNaN(value) && value >= 1,
         'Error: El valor de n debe ser un entero mayor a 0.');
 }
 
 function validateP() {
-    validateField('p', parseFloat, value => !isNaN(value) && value >= 0 && value <= 1,
+    validateField('p', Number.parseFloat, value => !Number.isNaN(value) && value >= 0 && value <= 1,
         'Error: La probabilidad debe estar entre 0 y 1');
 }
 
 function validateX() {
-    const n = parseInt(document.forms[0].n.value);
-    validateField('x', parseInt, value => !isNaN(value) && value >= 0 && value <= n,
+    const n = Number.parseInt(document.forms[0].n.value, 10);
+    validateField('x', value => Number.parseInt(value, 10),
+        value => !Number.isNaN(value) && value >= 0 && value <= n,
         'Error: El valor de x debe ser un entero entre 0 y n.');
 }
 
 function binomialCoefficient(n, x) {
     let result = 1;
-    for (let i = 0; i < x; i++) result *= (n - i) / (i + 1);
+    for (let i = 0; i < x; i++) {
+        result *= (n - i) / (i + 1);
+    }
     return result;
 }
 
 function binomialPmf(n, x, p) {
-    return binomialCoefficient(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x);
+    return binomialCoefficient(n, x) * p ** x * (1 - p) ** (n - x);
 }
 
 function binomialCdf(n, x, p) {
     let cdf = 0;
-    for (let i = 0; i <= x; i++) cdf += binomialPmf(n, i, p);
+    for (let i = 0; i <= x; i++) {
+        cdf += binomialPmf(n, i, p);
+    }
     return cdf;
 }
 
 function binomialInputs() {
     return {
-        n: parseInt(document.forms[0].n.value),
-        p: parseFloat(document.forms[0].p.value),
-        x: parseInt(document.forms[0].x.value)
+        n: Number.parseInt(document.forms[0].n.value, 10),
+        p: Number.parseFloat(document.forms[0].p.value),
+        x: Number.parseInt(document.forms[0].x.value, 10)
     };
 }
 
 function areValidInputs(values, requireX) {
-    return !isNaN(values.n) && !isNaN(values.p) && values.n >= 1
+    return !Number.isNaN(values.n) && !Number.isNaN(values.p) && values.n >= 1
         && values.p >= 0 && values.p <= 1
-        && (!requireX || !isNaN(values.x) && values.x >= 0 && values.x <= values.n);
+        && (!requireX || !Number.isNaN(values.x) && values.x >= 0 && values.x <= values.n);
 }
 
 function updateProb() {
     const values = binomialInputs();
-    if (!areValidInputs(values, true)) return;
+    if (!areValidInputs(values, true)) {
+        return;
+    }
 
     const comparison = document.forms[0].mydropdown.value;
     let probability = 0;
@@ -58,7 +65,9 @@ function updateProb() {
 
 function updatePlot() {
     const values = binomialInputs();
-    if (!areValidInputs(values, false)) return;
+    if (!areValidInputs(values, false)) {
+        return;
+    }
 
     const mean = values.n * values.p;
     const sd = Math.sqrt(values.n * values.p * (1 - values.p));
@@ -75,6 +84,8 @@ function updatePlot() {
 
 function updateTable() {
     const values = binomialInputs();
-    if (!areValidInputs(values, false)) return;
+    if (!areValidInputs(values, false)) {
+        return;
+    }
     populateProbabilityTable(0, values.n, x => binomialPmf(values.n, x, values.p));
 }

@@ -10,7 +10,7 @@ function validateField(name, parser, isValid, message) {
 }
 
 function validateL() {
-    validateField('l', parseFloat, value => !isNaN(value) && value > 0,
+    validateField('l', Number.parseFloat, value => !Number.isNaN(value) && value > 0,
         'Error: El valor de lambda debe ser mayor a 0.');
 }
 
@@ -67,7 +67,7 @@ function renderMoments(mean, standardDeviation) {
     let text = '\\( \\mu = E(X) = ' + mean.toFixed(3) + ';\\hspace{0.5cm}\\)';
     text += '\\( \\sigma = ' + standardDeviation.toFixed(3) + ';\\hspace{0.5cm}\\)';
     text += '\\( \\sigma^2 = \\text{Var}(X) = '
-        + Math.pow(standardDeviation, 2).toFixed(3) + '.\\)';
+        + (standardDeviation ** 2).toFixed(3) + '.\\)';
     document.getElementById('moments').innerHTML = text;
     MathJax.typesetPromise(['#moments']);
 }

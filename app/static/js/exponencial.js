@@ -1,7 +1,7 @@
 
 function validateX() {
-    const x = parseFloat(document.forms[0].x.value);
-    if (x <= 0  || isNaN(x)) {
+    const x = Number.parseFloat(document.forms[0].x.value);
+    if (x <= 0 || Number.isNaN(x)) {
         alert('Error: El valor de x debe ser mayor a 0.');
         document.forms[0].x.value = '';
     } else {
@@ -14,10 +14,10 @@ function exponencialDcf(l, x) {
 }
 
 function updateProb() {
-    const l = parseFloat(document.forms[0].l.value);
-    const x = parseFloat(document.forms[0].x.value);
+    const l = Number.parseFloat(document.forms[0].l.value);
+    const x = Number.parseFloat(document.forms[0].x.value);
 
-    if (isNaN(l) || isNaN(x) || l <= 0 || x <= 0) {
+    if (Number.isNaN(l) || Number.isNaN(x) || l <= 0 || x <= 0) {
         return;
     }
 
@@ -32,4 +32,3 @@ function updateProb() {
 
     document.forms[0].prob.value = prob.toFixed(5);
 }
-
