@@ -157,12 +157,21 @@ jobs:
             cd /opt/alephsub0-calcs
 
             IMAGE="${{ needs.construccion.outputs.image }}:${{ needs.construccion.outputs.image_tag }}"
-            ECR_REGISTRY="${{ needs.construccion.outputs.ecr_registry }}"
-            AWS_PROFILE_ARG=""
 
-            aws ecr get-login-password --region "${{ env.AWS_REGION }}" ${AWS_PROFILE_ARG} | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+            echo "Desplegando imagen: ${IMAGE}"
+
+            echo "Registrando en ECR..."
+            ECR_REGISTRY="${{ needs.construccion.outputs.ecr_registry }}"
+            
+            aws ecr get-login-password --region "${{ env.AWS_REGION }}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
             sed -i -E "s|^([[:space:]]*)image:.*$|\1image: ${IMAGE}|" docker-compose.yml
             docker compose pull
             docker compose up -d --force-recreate
+
+            echo "Despliegue completado con éxito."
+
+            docker prune -f
+
+            echo "Limpiando imágenes antiguas..."
           EOF
