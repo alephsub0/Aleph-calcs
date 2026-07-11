@@ -17,11 +17,11 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY || 'aleph-calcs' }}
+  ECR_REPOSITORY: ecr-prod-alephsub0/calcs
 
 jobs:
-  test:
-    name: Pruebas y analisis de codigo
+  pruebas:
+    name: Stage 1 - Pruebas y analisis de codigo
     runs-on: self-hosted
 
     steps:
@@ -82,15 +82,15 @@ jobs:
 
       - name: Analisis Sonar
         if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-  build:
-    name: Construccion de imagen y push
+  construccion:
+    name: Stage 2 - Construccion de imagen y push
     runs-on: self-hosted
-    needs: test
+    needs: pruebas
     if: github.event_name == 'push'
 
     outputs:
@@ -134,10 +134,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  deploy:
-    name: Despliegue
+  despliegue:
+    name: Stage 3 - Despliegue
     runs-on: self-hosted
-    needs: build
+    needs: construccion
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     environment: production
 
@@ -160,8 +160,8 @@ jobs:
             set -euo pipefail
             cd /srv/www/aleph-calcs
 
-            IMAGE="${{ needs.build.outputs.image }}:${{ needs.build.outputs.image_tag }}"
-            ECR_REGISTRY="${{ needs.build.outputs.ecr_registry }}"
+            IMAGE="${{ needs.construccion.outputs.image }}:${{ needs.construccion.outputs.image_tag }}"
+            ECR_REGISTRY="${{ needs.construccion.outputs.ecr_registry }}"
             AWS_PROFILE_ARG=""
 
             if [ -n "${{ secrets.SERVER_AWS_PROFILE }}" ]; then
