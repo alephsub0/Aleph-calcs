@@ -1,28 +1,176 @@
-name: Deploy to Server
+name: CI/CD
 
 on:
   push:
     branches:
+      - develop
+      - main
+  pull_request:
+    branches:
+      - develop
       - main
 
+permissions:
+  contents: read
+  id-token: write
+
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY || 'aleph-calcs' }}
+
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
+  test:
+    name: Pruebas y analisis de codigo
+    runs-on: self-hosted
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Validar estilo PEP8 con flake8
+        run: flake8 app tests --count --show-source --statistics
+
+      - name: Ejecutar pruebas con cobertura
+        run: |
+          coverage run -m pytest -q --junitxml=test-results.xml
+          coverage xml -i
+          coverage html -i
+
+      - name: Publicar resultados de pruebas
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: test-results.xml
+          if-no-files-found: error
+
+      - name: Publicar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            coverage.xml
+            htmlcov
+          if-no-files-found: error
+
+      - name: Publicar artefacto de codigo fuente
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-code
+          path: |
+            app
+            tests
+            Dockerfile
+            requirements.txt
+            requirements-dev.txt
+            sonar-project.properties
+            docker-compose.yml
+
+      - name: Analisis Sonar
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main')
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+  build:
+    name: Construccion de imagen y push
+    runs-on: self-hosted
+    needs: test
+    if: github.event_name == 'push'
+
+    outputs:
+      ecr_registry: ${{ steps.login-ecr.outputs.registry }}
+      image: ${{ steps.meta.outputs.image }}
+      image_tag: ${{ steps.meta.outputs.image_tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::588738615548:role/role-github-actions-ecr-push
+          aws-region: us-east-1
+
+      - name: Login a Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Definir tag de imagen
+        id: meta
+        run: |
+          IMAGE_REPOSITORY="${{ steps.login-ecr.outputs.registry }}/${ECR_REPOSITORY}"
+          IMAGE_TAG="sha-${GITHUB_SHA::7}"
+          echo "image=${IMAGE_REPOSITORY}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=${IMAGE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Construir y publicar imagen Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.image_tag }}
+            ${{ steps.meta.outputs.image }}:${{ github.ref_name }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Despliegue
+    runs-on: self-hosted
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SERVER_APP_SSH_KEY }}
+
+      - name: Publicar docker-compose en servidor
+        run: |
+          scp -o StrictHostKeyChecking=no -P ${{ secrets.SERVER_APP_PORT }} docker-compose.yml ${{ secrets.SERVER_APP_USER }}@${{ secrets.SERVER_APP }}:/srv/www/aleph-calcs/docker-compose.yml
 
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_APP_USER }}@${{ secrets.SERVER_APP }} -p ${{ secrets.SERVER_APP_PORT }} << 'EOF'
+            set -euo pipefail
             cd /srv/www/aleph-calcs
-            git pull origin main
-            source venv-aleph-calcs/bin/activate
-            sudo systemctl restart alph-calc
+
+            IMAGE="${{ needs.build.outputs.image }}:${{ needs.build.outputs.image_tag }}"
+            ECR_REGISTRY="${{ needs.build.outputs.ecr_registry }}"
+            AWS_PROFILE_ARG=""
+
+            if [ -n "${{ secrets.SERVER_AWS_PROFILE }}" ]; then
+              AWS_PROFILE_ARG="--profile ${{ secrets.SERVER_AWS_PROFILE }}"
+            fi
+
+            aws ecr get-login-password --region "${{ env.AWS_REGION }}" ${AWS_PROFILE_ARG} | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+
+            sed -i -E "s|^([[:space:]]*)image:.*$|\1image: ${IMAGE}|" docker-compose.yml
+            docker compose pull
+            docker compose up -d --force-recreate
           EOF

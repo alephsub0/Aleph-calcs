@@ -1,0 +1,13 @@
+.git
+.github
+.pytest_cache
+.coverage
+htmlcov
+coverage.xml
+test-results.xml
+__pycache__
+*.py[cod]
+venv
+venv-*
+.vscode
+ref_dev.yml

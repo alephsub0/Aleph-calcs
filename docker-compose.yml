@@ -1,0 +1,7 @@
+services:
+  aleph-calcs:
+    image: aleph-calcs:local
+    container_name: aleph-calcs
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
