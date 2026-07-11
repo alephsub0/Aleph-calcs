@@ -150,23 +150,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SERVER_APP_SSH_KEY }}
 
-      - name: Publicar docker-compose en servidor
-        run: |
-          scp -o StrictHostKeyChecking=no -P ${{ secrets.SERVER_APP_PORT }} docker-compose.yml ${{ secrets.SERVER_APP_USER }}@${{ secrets.SERVER_APP }}:/srv/www/aleph-calcs/docker-compose.yml
-
       - name: Deploy to Server
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_APP_USER }}@${{ secrets.SERVER_APP }} -p ${{ secrets.SERVER_APP_PORT }} << 'EOF'
             set -euo pipefail
-            cd /srv/www/aleph-calcs
+            cd /opt/alephsub0-calcs
 
             IMAGE="${{ needs.construccion.outputs.image }}:${{ needs.construccion.outputs.image_tag }}"
             ECR_REGISTRY="${{ needs.construccion.outputs.ecr_registry }}"
             AWS_PROFILE_ARG=""
-
-            if [ -n "${{ secrets.SERVER_AWS_PROFILE }}" ]; then
-              AWS_PROFILE_ARG="--profile ${{ secrets.SERVER_AWS_PROFILE }}"
-            fi
 
             aws ecr get-login-password --region "${{ env.AWS_REGION }}" ${AWS_PROFILE_ARG} | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
