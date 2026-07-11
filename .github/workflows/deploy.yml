@@ -177,7 +177,7 @@ jobs:
 
             echo "Despliegue completado con éxito."
 
-            docker prune -f
+            docker image prune -a -f
 
             echo "Limpiando imágenes antiguas..."
           EOF
