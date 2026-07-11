@@ -64,10 +64,9 @@ function drawDiscreteDistribution(config) {
 }
 
 function renderMoments(mean, standardDeviation) {
-    let text = '\\( \\mu = E(X) = ' + mean.toFixed(3) + ';\\hspace{0.5cm}\\)';
-    text += '\\( \\sigma = ' + standardDeviation.toFixed(3) + ';\\hspace{0.5cm}\\)';
-    text += '\\( \\sigma^2 = \\text{Var}(X) = '
-        + (standardDeviation ** 2).toFixed(3) + '.\\)';
+    const text = String.raw`\( \mu = E(X) = ${mean.toFixed(3)};\hspace{0.5cm}\)
+        \( \sigma = ${standardDeviation.toFixed(3)};\hspace{0.5cm}\)
+        \( \sigma^2 = \text{Var}(X) = ${(standardDeviation ** 2).toFixed(3)}.\)`;
     document.getElementById('moments').innerHTML = text;
     MathJax.typesetPromise(['#moments']);
 }
