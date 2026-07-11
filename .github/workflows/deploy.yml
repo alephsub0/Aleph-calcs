@@ -19,6 +19,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: ecr-prod-alephsub0/calcs
 
+
 jobs:
   pruebas:
     name: Stage 1 - Pruebas y analisis de codigo
@@ -160,8 +161,9 @@ jobs:
 
             echo "Desplegando imagen: ${IMAGE}"
 
-            echo "Registrando en ECR..."
             ECR_REGISTRY="${{ needs.construccion.outputs.ecr_registry }}"
+
+            echo "Registrando en registry: ${ECR_REGISTRY}"
             
             aws ecr get-login-password --region "${{ env.AWS_REGION }}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
