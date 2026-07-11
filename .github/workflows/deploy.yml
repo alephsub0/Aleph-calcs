@@ -164,8 +164,12 @@ jobs:
             ECR_REGISTRY="${{ needs.construccion.outputs.ecr_registry }}"
 
             echo "Registrando en registry: ${ECR_REGISTRY}"
+
+            AWS_PROFILE="${{ secrets.AWS_PROFILE }}"
+
+            echo "Iniciando sesión con perfil de AWS: ${AWS_PROFILE}"
             
-            aws ecr get-login-password --region "${{ env.AWS_REGION }}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+            aws ecr get-login-password --region "${{ env.AWS_REGION }}" --profile "${AWS_PROFILE}" | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
 
             sed -i -E "s|^([[:space:]]*)image:.*$|\1image: ${IMAGE}|" docker-compose.yml
             docker compose pull
