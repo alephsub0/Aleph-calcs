@@ -1,12 +1,3 @@
-function validateL() {
-    const l = parseFloat(document.forms[0].l.value);
-    if (l <= 0  || isNaN(l)) {
-        alert('Error: El valor de lambda debe ser mayor a 0.');
-        document.forms[0].l.value = '';
-    } else {
-        document.forms[0].l.value = l;
-    }
-}
 
 function validateX() {
     const x = parseFloat(document.forms[0].x.value);

@@ -27,5 +27,5 @@ def exponencial():
     return render_template('exponencial.html')
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover - punto de entrada manual
     app.run(debug=True)

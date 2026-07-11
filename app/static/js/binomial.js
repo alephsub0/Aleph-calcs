@@ -1,171 +1,80 @@
 function validateN() {
-    const n = parseInt(document.forms[0].n.value);
-    if (n < 1 || isNaN(n)) {
-        alert('Error: El valor de n debe ser un entero mayor a 0.');
-        document.forms[0].n.value = '';
-    } else {
-        document.forms[0].n.value = n;
-    }
+    validateField('n', parseInt, value => !isNaN(value) && value >= 1,
+        'Error: El valor de n debe ser un entero mayor a 0.');
 }
 
 function validateP() {
-    const p = parseFloat(document.forms[0].p.value);
-    if (p < 0 || p > 1 || isNaN(p)) {
-        alert('Error: La probabilidad debe estar entre 0 y 1');
-        document.forms[0].p.value = '';
-    } else {
-        document.forms[0].p.value = p;
-    }
+    validateField('p', parseFloat, value => !isNaN(value) && value >= 0 && value <= 1,
+        'Error: La probabilidad debe estar entre 0 y 1');
 }
 
 function validateX() {
-    const x = parseInt(document.forms[0].x.value);
     const n = parseInt(document.forms[0].n.value);
-    if (x < 0 || x > n || isNaN(x)) {
-        alert('Error: El valor de x debe ser un entero entre 0 y n.');
-        document.forms[0].x.value = '';
-    } else {
-        document.forms[0].x.value = x;
-    }
+    validateField('x', parseInt, value => !isNaN(value) && value >= 0 && value <= n,
+        'Error: El valor de x debe ser un entero entre 0 y n.');
 }
 
 function binomialCoefficient(n, x) {
     let result = 1;
-    for (let i = 0; i < x; i++) {
-        result *= (n - i) / (i + 1);
-    }
+    for (let i = 0; i < x; i++) result *= (n - i) / (i + 1);
     return result;
 }
 
 function binomialPmf(n, x, p) {
-    const coeff = binomialCoefficient(n, x);
-    return coeff * Math.pow(p, x) * Math.pow(1 - p, n - x);
+    return binomialCoefficient(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x);
 }
 
 function binomialCdf(n, x, p) {
     let cdf = 0;
-    for (let i = 0; i <= x; i++) {
-        cdf += binomialPmf(n, i, p);
-    }
+    for (let i = 0; i <= x; i++) cdf += binomialPmf(n, i, p);
     return cdf;
 }
 
+function binomialInputs() {
+    return {
+        n: parseInt(document.forms[0].n.value),
+        p: parseFloat(document.forms[0].p.value),
+        x: parseInt(document.forms[0].x.value)
+    };
+}
+
+function areValidInputs(values, requireX) {
+    return !isNaN(values.n) && !isNaN(values.p) && values.n >= 1
+        && values.p >= 0 && values.p <= 1
+        && (!requireX || !isNaN(values.x) && values.x >= 0 && values.x <= values.n);
+}
+
 function updateProb() {
-    const n = parseInt(document.forms[0].n.value);
-    const p = parseFloat(document.forms[0].p.value);
-    const x = parseInt(document.forms[0].x.value);
+    const values = binomialInputs();
+    if (!areValidInputs(values, true)) return;
 
-    if (isNaN(n) || isNaN(p) || isNaN(x) || n < 1 || x < 0 || x > n || p < 0 || p > 1) {
-        return;
-    }
-
-    const dropdownValue = document.forms[0].mydropdown.value;
-
-    let prob = 0;
-    if (dropdownValue === 'eq') {
-        prob = binomialPmf(n, x, p);
-    } else if (dropdownValue === 'le') {
-        prob = binomialCdf(n, x, p);
-    } else if (dropdownValue === 'ge') {
-        prob = 1 - binomialCdf(n, x - 1, p);
-    }
-
-    document.forms[0].prob.value = prob.toFixed(5);
+    const comparison = document.forms[0].mydropdown.value;
+    let probability = 0;
+    if (comparison === 'eq') probability = binomialPmf(values.n, values.x, values.p);
+    else if (comparison === 'le') probability = binomialCdf(values.n, values.x, values.p);
+    else if (comparison === 'ge') probability = 1 - binomialCdf(values.n, values.x - 1, values.p);
+    document.forms[0].prob.value = probability.toFixed(5);
 }
 
 function updatePlot() {
-    const n = parseInt(document.forms[0].n.value);
-    const p = parseFloat(document.forms[0].p.value);
-    const x = parseInt(document.forms[0].x.value);
+    const values = binomialInputs();
+    if (!areValidInputs(values, false)) return;
 
-    if (isNaN(n) || isNaN(p) || n < 1 || p < 0 || p > 1) {
-        return;
-    }
-
-    let mean = n * p;
-    let sd = Math.sqrt(n * p * (1 - p));
-
-    var data = new google.visualization.DataTable();
-    data.addColumn('number', 'x');
-    data.addColumn('number', 'P(X=x)');
-    data.addColumn({ 'type': 'string', 'role': 'tooltip', 'p': { 'html': true } });
-    data.addColumn('number', 'P(X=x)');
-
-    var xlo = 0, xhi = n + 0.5;
-    if (n > 10) {
-        xlo = Math.max(0, mean - 6 * sd);
-        xhi = Math.min(n + 0.5, mean + 6 * sd);
-    }
-
-    data.addRows(n + 1);
-
-    const dropdownValue = document.forms[0].mydropdown.value;
-
-    for (var i = 0; i <= n; i++) {
-        var pmfValue = binomialPmf(n, i, p);
-        data.setCell(i, 0, i);
-        data.setCell(i, 1, pmfValue);
-        data.setCell(i, 2, 'P(X=' + i + ') = ' + pmfValue.toFixed(5));
-
-        if ((dropdownValue == 'eq' && i == x) || (dropdownValue == 'le' && i <= x) || (dropdownValue == 'ge' && i >= x)) {
-            data.setCell(i, 1, 0);
-            data.setCell(i, 3, pmfValue);
-        }
-    }
-
-    var options =
-    {
-        backgroundColor: 'transparent',
-        hAxis: {
-            title: 'x', titleTextStyle: { color: '#2a4861' },
-            gridlines: { color: 'transparent' },
-            viewWindow: { min: xlo - 0.5, max: xhi },
-            baselineColor: 'transparent'
-        },
-        vAxis: {
-            title: 'P(X=x)', titleTextStyle: { color: '#2a4861' },
-            gridlines: { count: 5, color: 'transparent' },
-            viewWindow: { min: 0 },
-            viewWindowMode: 'explicit'
-        },
-        legend: { position: 'none' },
-        seriesType: "bars",
-        isStacked: true,
-        colors: ['#2a4861', '#419693']
-    };
-
-    var chart = new google.visualization.ComboChart(document.getElementById('Plot'));
-    chart.draw(data, options);
-
-    var txt = "";
-
-    txt += '\\( \\mu = E(X) = ' + mean.toFixed(3) + ';\\hspace{0.5cm}\\)';
-    txt += '\\( \\sigma = ' + sd.toFixed(3) + ';\\hspace{0.5cm}\\)';
-    txt += '\\( \\sigma^2 = \\text{Var}(X) = ' + Math.pow(sd, 2).toFixed(3) + '.\\)';
-
-    document.getElementById("moments").innerHTML = txt;
-    MathJax.typesetPromise(["#moments"]);
-
-    updateTable()
+    const mean = values.n * values.p;
+    const sd = Math.sqrt(values.n * values.p * (1 - values.p));
+    const min = values.n > 10 ? Math.max(0, mean - 6 * sd) : 0;
+    const max = values.n > 10 ? Math.min(values.n + 0.5, mean + 6 * sd) : values.n + 0.5;
+    drawDiscreteDistribution({
+        start: 0, end: values.n, min: min, max: max, selectedX: values.x,
+        comparison: document.forms[0].mydropdown.value,
+        probabilityFor: x => binomialPmf(values.n, x, values.p)
+    });
+    renderMoments(mean, sd);
+    updateTable();
 }
 
-// Función para actualizar la tabla de probabilidades
 function updateTable() {
-    const n = parseInt(document.getElementsByName('n')[0].value);
-    const p = parseFloat(document.getElementsByName('p')[0].value);
-
-    if (isNaN(n) || isNaN(p) || n <= 0 || p < 0 || p > 1) {
-        return;
-    }
-
-    const tableBody = document.getElementById('probabilities-body');
-    tableBody.innerHTML = ''; // Limpiar la tabla antes de llenarla
-
-    // Generar las filas de la tabla
-    for (let x = 0; x <= n; x++) {
-        const probability = binomialPmf(n, x, p).toFixed(5); // 
-
-        const row = `<tr><td>${x}</td><td> ${probability} </td></tr>`;
-        tableBody.innerHTML += row;
-    }
+    const values = binomialInputs();
+    if (!areValidInputs(values, false)) return;
+    populateProbabilityTable(0, values.n, x => binomialPmf(values.n, x, values.p));
 }
