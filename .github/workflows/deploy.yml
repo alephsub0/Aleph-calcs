@@ -17,7 +17,7 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: ecr-prod-alephsub0/calcs
+  ECR_REPOSITORY: ecr-org-alephsub0/calcs
 
 
 jobs:
@@ -106,7 +106,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::588738615548:role/role-github-actions-ecr-push
+          role-to-assume: arn:aws:iam::160135134077:role/rl-org-github-actions
           aws-region: us-east-1
 
       - name: Login a Amazon ECR
