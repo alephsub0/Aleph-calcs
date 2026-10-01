@@ -103,20 +103,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Diagnosticar identidad OIDC
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const token = await core.getIDToken('sts.amazonaws.com');
-            const claims = JSON.parse(
-              Buffer.from(token.split('.')[1], 'base64url').toString('utf8')
-            );
-            core.info(`repository=${github.repository}`);
-            core.info(`ref=${github.ref}`);
-            core.info(`aud=${claims.aud}`);
-            core.info(`sub=${claims.sub}`);
-
-
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -163,11 +149,11 @@ jobs:
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.SERVER_APP_SSH_KEY }}
+          ssh-private-key: ${{ secrets.SERVER_APP_ORG_SSH_KEY }}
 
       - name: Deploy to Server
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_APP_USER }}@${{ secrets.SERVER_APP }} -p ${{ secrets.SERVER_APP_PORT }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_APP_ORG_USER }}@${{ secrets.SERVER_ORG_APP }} -p ${{ secrets.SERVER_APP_ORG_PORT }} << 'EOF'
             set -euo pipefail
             cd /opt/alephsub0-calcs
 
